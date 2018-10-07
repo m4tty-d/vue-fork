@@ -1,3 +1,18 @@
 {
-  "message": "hello i18n !!"
+  "motto": "Play chess real-time and skip the bullshit. No registration, no hustle, just play.",
+  "areYouReady": "Are you ready?",
+  "watchOthers": "I'd rather watch others play",
+  "createGame": "Yes, create my game",
+  "configureGame": "Configure game",
+  "preferredColor": "Preferred color",
+  "black": "Black",
+  "white": "White",
+  "random": "Random",
+  "timeControl": "Time control",
+  "standard": "Standard",
+  "custom": "Custom",
+  "baseTime": "Base time per sides (in minutes)",
+  "additionalTime": "Additional time (in seconds)",
+  "cancel": "Cancel",
+  "letsGo": "Let's go"
 }

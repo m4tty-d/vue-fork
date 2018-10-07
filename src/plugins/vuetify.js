@@ -9,7 +9,18 @@ import {
   VIcon,
   VGrid,
   VToolbar,
-  transitions
+  transitions,
+  VDialog,
+  VCard,
+  VRadioGroup,
+  VSlider,
+  VSubheader,
+  VSwitch,
+  VDivider,
+  VMenu,
+  VTabs,
+  VBtnToggle,
+  VResponsive
 } from 'vuetify'
 import 'vuetify/src/stylus/app.styl'
 
@@ -23,7 +34,28 @@ Vue.use(Vuetify, {
     VIcon,
     VGrid,
     VToolbar,
-    transitions
+    transitions,
+    VDialog,
+    VCard,
+    VRadioGroup,
+    VSlider,
+    VSubheader,
+    VSwitch,
+    VDivider,
+    VMenu,
+    VTabs,
+    VBtnToggle,
+    VResponsive
   },
-  iconfont: 'md'
+  iconfont: 'md',
+  theme: {
+    primary: '#011627',
+    secondary: '#2EC4B6',
+    accent: '#2F404E',
+    error: '#E71D36',
+    info: '#2196F3',
+    success: '#3EC493',
+    warning: '#FF9F1C',
+    babyPowder: '#FDFFFC'
+  }
 })
