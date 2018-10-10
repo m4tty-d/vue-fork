@@ -51,74 +51,73 @@ v-dialog(v-model="show" persistent width="500")
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
-  data () {
+  data() {
     return {
       show: false,
       tab: 0,
-      color: 'black',
+      color: "black",
       baseTime: 1,
       additionalTime: 0
-    }
+    };
   },
 
   computed: {
     ...mapGetters({
-      roomId: 'GET_ROOMID'
+      roomId: "GET_ROOMID"
     }),
-    time () {
-      if (this.baseTime === 1 && this.additionalTime === 0) return 'bullet'
-      if (this.baseTime === 3 && this.additionalTime === 2) return 'blitz'
-      if (this.baseTime === 10 && this.additionalTime === 0) return 'rapid'
-      if (this.baseTime === 15 && this.additionalTime === 15) return 'classical'
+    time() {
+      if (this.baseTime === 1 && this.additionalTime === 0) return "bullet";
+      if (this.baseTime === 3 && this.additionalTime === 2) return "blitz";
+      if (this.baseTime === 10 && this.additionalTime === 0) return "rapid";
+      if (this.baseTime === 15 && this.additionalTime === 15)
+        return "classical";
     }
   },
 
   methods: {
-    setTime (type) {
+    setTime(type) {
       switch (type) {
-        case 'bullet':
-          this.baseTime = 1
-          this.additionalTime = 0
-          break
-        case 'blitz':
-          this.baseTime = 3
-          this.additionalTime = 2
-          break
-        case 'rapid':
-          this.baseTime = 10
-          this.additionalTime = 0
-          break
-        case 'classical':
-          this.baseTime = 15
-          this.additionalTime = 15
-          break
+        case "bullet":
+          this.baseTime = 1;
+          this.additionalTime = 0;
+          break;
+        case "blitz":
+          this.baseTime = 3;
+          this.additionalTime = 2;
+          break;
+        case "rapid":
+          this.baseTime = 10;
+          this.additionalTime = 0;
+          break;
+        case "classical":
+          this.baseTime = 15;
+          this.additionalTime = 15;
+          break;
       }
     },
 
-    create () {
-      this.$socket.sendObj(
-        {
-          type: 'createGame',
-          payload: {
-            color: this.color,
-            baseTime: this.baseTime,
-            additionalTime: this.additionalTime
-          }
-        }
-      )
+    create() {
+      this.$socket.sendObj({
+        type: "createGame",
+        payload: JSON.stringify({
+          color: this.color,
+          baseTime: this.baseTime,
+          additionalTime: this.additionalTime
+        })
+      });
     }
   },
 
   watch: {
-    roomId: function () {
-      this.show = false
-      this.$router.push({ name: 'game', params: { roomId: this.roomId } })
+    roomId: function() {
+      this.show = false;
+      this.$router.push({ name: "game", params: { roomId: this.roomId } });
     }
   }
-}
+};
 </script>
 
 <style lang="sass">
