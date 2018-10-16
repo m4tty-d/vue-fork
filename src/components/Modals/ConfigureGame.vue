@@ -23,7 +23,7 @@ v-dialog(v-model="show" persistent width="500")
                 v-container.py-1(align-center justify-center fill-height)
                   v-layout(row wrap)
                     v-flex(xs12)
-                      v-radio-group(:value="time" @change="setTime" column)
+                      v-radio-group(:value="getStandardTimeControlsName" @change="setTime" column)
                         v-radio(label="Bullet (1+0)" value="bullet" class="pb-3")
                         v-radio(label="Blitz (3+2)" value="blitz" class="pb-3")
                         v-radio(label="Rapid (10+0)" value="rapid" class="pb-3")
@@ -33,13 +33,13 @@ v-dialog(v-model="show" persistent width="500")
                   v-layout(row wrap)
                     v-flex.pb-0(xs12)
                       v-subheader.pl-0 {{ $t('baseTime') }}
-                      v-slider(v-model="baseTime"
+                      v-slider(v-model="time.base"
                               thumb-label="always"
                               :min="1"
                               :max="120")
                     v-flex(xs12)
                       v-subheader.pl-0 {{ $t('additionalTime') }}
-                      v-slider(v-model="additionalTime"
+                      v-slider(v-model="time.additional"
                               thumb-label="always"
                               :max="120")
     v-card-actions
@@ -51,78 +51,88 @@ v-dialog(v-model="show" persistent width="500")
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
 
 export default {
-  data() {
+  data () {
     return {
       show: false,
       tab: 0,
-      color: "black",
-      baseTime: 1,
-      additionalTime: 0
-    };
+      color: 'black',
+      time: {
+        base: 1,
+        additional: 0
+      }
+    }
   },
 
   computed: {
     ...mapGetters({
-      roomId: "GET_ROOMID"
+      roomId: 'GET_ROOMID'
     }),
-    time() {
-      if (this.baseTime === 1 && this.additionalTime === 0) return "bullet";
-      if (this.baseTime === 3 && this.additionalTime === 2) return "blitz";
-      if (this.baseTime === 10 && this.additionalTime === 0) return "rapid";
-      if (this.baseTime === 15 && this.additionalTime === 15)
-        return "classical";
+    getStandardTimeControlsName () {
+      if (this.time.base === 1 && this.time.additional === 0) return 'bullet'
+      if (this.time.base === 3 && this.time.additional === 2) return 'blitz'
+      if (this.time.base === 10 && this.time.additional === 0) return 'rapid'
+      if (this.time.base === 15 && this.time.additional === 15) return 'classical'
     }
   },
 
   methods: {
-    setTime(type) {
+    setTime (type) {
       switch (type) {
-        case "bullet":
-          this.baseTime = 1;
-          this.additionalTime = 0;
-          break;
-        case "blitz":
-          this.baseTime = 3;
-          this.additionalTime = 2;
-          break;
-        case "rapid":
-          this.baseTime = 10;
-          this.additionalTime = 0;
-          break;
-        case "classical":
-          this.baseTime = 15;
-          this.additionalTime = 15;
-          break;
+        case 'bullet':
+          this.time.base = 1
+          this.time.additional = 0
+          break
+        case 'blitz':
+          this.time.base = 3
+          this.time.additional = 2
+          break
+        case 'rapid':
+          this.time.base = 10
+          this.time.additional = 0
+          break
+        case 'classical':
+          this.time.base = 15
+          this.time.additional = 15
+          break
       }
     },
 
-    create() {
-      this.$socket.sendObj({
-        type: "createGame",
-        payload: JSON.stringify({
-          color: this.color,
-          baseTime: this.baseTime,
-          additionalTime: this.additionalTime
-        })
-      });
+    create () {
+      this.$socket.sendObj(
+        {
+          type: 'createGame',
+          payload: {
+            color: this.color,
+            baseTime: this.time.base,
+            additionalTime: this.time.additional
+          }
+        }
+      )
     }
   },
 
   watch: {
-    roomId: function() {
-      this.show = false;
-      this.$router.push({ name: "game", params: { roomId: this.roomId } });
+    roomId: function () {
+      this.$store.commit('SET_GAME', {
+        color: this.color,
+        time: {
+          base: this.time.base,
+          additional: this.time.additional
+        }
+      })
+      this.show = false
+      this.$router.push({ name: 'game', params: { roomId: this.roomId } })
     }
   }
-};
+}
 </script>
 
 <style lang="sass">
 .time-control-active
   background-color: #011627
-  color: white
+  color: white !important
   opacity: 1 !important
 </style>
