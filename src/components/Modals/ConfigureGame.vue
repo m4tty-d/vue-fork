@@ -51,8 +51,6 @@ v-dialog(v-model="show" persistent width="500")
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 export default {
   data () {
     return {
@@ -67,9 +65,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      roomId: 'GET_ROOMID'
-    }),
     getStandardTimeControlsName () {
       if (this.time.base === 1 && this.time.additional === 0) return 'bullet'
       if (this.time.base === 3 && this.time.additional === 2) return 'blitz'
@@ -101,30 +96,14 @@ export default {
     },
 
     create () {
-      this.$socket.sendObj(
-        {
-          type: 'createGame',
-          payload: {
-            color: this.color,
-            baseTime: this.time.base,
-            additionalTime: this.time.additional
-          }
-        }
-      )
-    }
-  },
-
-  watch: {
-    roomId: function () {
-      this.$store.commit('SET_GAME', {
-        color: this.color,
-        time: {
-          base: this.time.base,
-          additional: this.time.additional
-        }
+      this.$socket.sendObj({
+        type: 'createGame',
+        payload: JSON.stringify({
+          color: this.color,
+          baseTime: this.time.base,
+          additionalTime: this.time.additional
+        })
       })
-      this.show = false
-      this.$router.push({ name: 'game', params: { roomId: this.roomId } })
     }
   }
 }

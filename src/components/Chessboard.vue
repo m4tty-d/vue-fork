@@ -1,0 +1,108 @@
+<template lang="pug">
+.blue.merida
+  .cg-board-wrap(ref="board")
+</template>
+
+<script>
+import Chess from 'chess.js'
+import { Chessground } from 'chessground'
+import '@/styles/chessboard.css'
+
+export default {
+  props: {
+    orientation: {
+      type: String,
+      default: 'white'
+    },
+    onPromotion: {
+      type: Function
+    }
+  },
+
+  data () {
+    return {
+      game: null,
+      board: null,
+      promotions: [],
+      promoteTo: 'q'
+    }
+  },
+
+  methods: {
+    turnColor () {
+      return this.game.turn() === 'w' ? 'white' : 'black'
+    },
+
+    possibleMoves () {
+      const dests = {}
+      this.game.SQUARES.forEach(s => {
+        const ms = this.game.moves({ square: s, verbose: true })
+        if (ms.length) dests[s] = ms.map(m => m.to)
+      })
+      return dests
+    },
+
+    calculatePromotions () {
+      let moves = this.game.moves({ verbose: true })
+      this.promotions = []
+      for (let move of moves) {
+        if (move.promotion) {
+          this.promotions.push(move)
+        }
+      }
+    },
+
+    isPromotion (orig, dest) {
+      let filteredPromotions = this.promotions.filter(move => move.from === orig && move.to === dest)
+      return filteredPromotions.length > 0
+    },
+
+    changeTurn () {
+      return (orig, dest, metadata) => {
+        if (this.isPromotion(orig, dest)) {
+          this.promoteTo = this.onPromotion()
+        }
+        this.game.move({ from: orig, to: dest, promotion: this.promoteTo })
+        this.board.set({
+          fen: this.game.fen(),
+          turnColor: this.turnColor(),
+          movable: {
+            color: this.turnColor(),
+            dests: this.possibleMoves()
+          }
+        })
+        this.calculatePromotions()
+        this.afterMove()
+      }
+    },
+
+    afterMove () {
+      this.$emit('onMove', {
+        history: this.game.history(),
+        fen: this.game.fen(),
+        turn: this.turnColor()
+      })
+    }
+  },
+
+  mounted () {
+    this.board = Chessground(this.$refs.board, {
+      fen: this.game.fen(),
+      turnColor: this.turnColor(),
+      orientation: this.orientation,
+      movable: {
+        color: this.turnColor(),
+        dests: this.possibleMoves()
+      }
+    })
+    this.board.set({
+      movable: { events: { after: this.changeTurn() } }
+    })
+  },
+
+  created () {
+    this.game = new Chess()
+    this.board = null
+  }
+}
+</script>

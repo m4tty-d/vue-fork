@@ -1,10 +1,10 @@
 import '@babel/polyfill'
 import Vue from 'vue'
-import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import i18n from './i18n'
+import './plugins/plugins'
 import VueNativeSock from 'vue-native-websocket'
 
 Vue.config.productionTip = false

@@ -1,15 +1,72 @@
 <template lang="pug">
-v-toolbar.babyPowder--text(color="secondary")
-    v-toolbar-title FORK
-    //- v-spacer
-    //- v-toolbar-items.hidden-sm-and-down
-    //-   v-btn(flat='') Link One
-    //-   v-btn(flat='') Link Two
-    //-   v-btn(flat='') Link Three
+v-container(fluid fill-height)
+  v-layout(row wrap align-center)
+    v-flex.pr-3(xs3)
+      chat
+    v-flex(xs6)
+      .board-container
+        chessboard(:orientation="getBoardOrientation" @onMove="move")
+    v-flex.pl-3(xs3)
+      clock(:base="getBaseTime" :additional="getAdditionalTime" :ticking="opponentsClockTicking")
+      notation.my-4(:history="history")
+      clock.mb-4(:base="getBaseTime" :additional="getAdditionalTime" :ticking="clockTicking")
 </template>
 
 <script>
-export default {
+import Chessboard from '@/components/Chessboard.vue'
+import Notation from '@/components/Notation.vue'
+import Clock from '@/components/Clock.vue'
+import Chat from '@/components/Chat.vue'
+import { mapGetters } from 'vuex'
 
+export default {
+  components: {
+    Chessboard,
+    Notation,
+    Clock,
+    Chat
+  },
+
+  data () {
+    return {
+      history: [],
+      turn: '',
+      isGameStarted: false
+    }
+  },
+
+  computed: {
+    ...mapGetters([
+      'getBoardOrientation',
+      'getBaseTime',
+      'getAdditionalTime'
+    ]),
+    clockTicking () {
+      return this.isGameStarted && this.getBoardOrientation === this.turn
+    },
+    opponentsClockTicking () {
+      return this.isGameStarted && this.getBoardOrientation !== this.turn
+    }
+  },
+
+  methods: {
+    move (data) {
+      this.history = data.history
+      if (this.history.length) {
+        this.isGameStarted = true
+      }
+      this.turn = data.turn
+    }
+  }
 }
 </script>
+
+<style lang="sass">
+  .board-container
+    .blue, .black, .white
+      background-color: transparent !important
+      border-color: transparent !important
+  .notation
+    height: 100%
+    width: 100%
+</style>
