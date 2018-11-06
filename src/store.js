@@ -12,14 +12,16 @@ export default new Vuex.Store({
     },
     player: {
       id: '',
-      color: ''
+      color: '',
+      isInitiator: false
     },
     game: {
       id: '',
       time: {
         base: 0,
         additional: 0
-      }
+      },
+      canStart: false
     }
   },
   getters: {
@@ -31,6 +33,12 @@ export default new Vuex.Store({
     },
     getAdditionalTime (state) {
       return state.game.time.additional
+    },
+    isPlayerInitiator (state) {
+      return state.player.isInitiator
+    },
+    canGameStart (state) {
+      return state.game.canStart
     }
   },
   mutations: {
@@ -51,13 +59,23 @@ export default new Vuex.Store({
           state.game.id = message.payload.roomId
           state.game.time.base = message.payload.baseTime
           state.game.time.additional = message.payload.additionalTime
+          state.player.isInitiator = true
           router.push({ name: 'game', params: { roomId: state.game.id } })
           break
         case 'playerCreated':
           state.player.id = message.payload.playerId
           state.player.color = message.payload.color
-          localStorage.setItem('playerId', state.player.id)
-          localStorage.setItem('playerColor', state.player.color)
+          // localStorage.setItem('playerId', state.player.id)
+          // localStorage.setItem('playerColor', state.player.color)
+          break
+        case 'roomJoined':
+          console.log('ROOM JOINED!!!')
+          state.game.time.base = message.payload.baseTime
+          state.game.time.additional = message.payload.additionalTime
+          break
+        case 'gameCanStart':
+          console.log('GAME CAN START!!!')
+          state.game.canStart = true
           break
         case 'error':
           console.log('Error!!! :', message.payload)

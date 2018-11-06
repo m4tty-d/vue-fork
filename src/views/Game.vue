@@ -10,6 +10,7 @@ v-container(fluid fill-height)
       clock(:base="getBaseTime" :additional="getAdditionalTime" :ticking="opponentsClockTicking")
       notation.my-4(:history="history")
       clock.mb-4(:base="getBaseTime" :additional="getAdditionalTime" :ticking="clockTicking")
+  send-link-modal(:show="showSendLink")
 </template>
 
 <script>
@@ -17,6 +18,7 @@ import Chessboard from '@/components/Chessboard.vue'
 import Notation from '@/components/Notation.vue'
 import Clock from '@/components/Clock.vue'
 import Chat from '@/components/Chat.vue'
+import SendLinkModal from '@/components/Modals/SendLink.vue'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -24,7 +26,8 @@ export default {
     Chessboard,
     Notation,
     Clock,
-    Chat
+    Chat,
+    SendLinkModal
   },
 
   data () {
@@ -39,13 +42,18 @@ export default {
     ...mapGetters([
       'getBoardOrientation',
       'getBaseTime',
-      'getAdditionalTime'
+      'getAdditionalTime',
+      'isPlayerInitiator',
+      'canGameStart'
     ]),
     clockTicking () {
       return this.isGameStarted && this.getBoardOrientation === this.turn
     },
     opponentsClockTicking () {
       return this.isGameStarted && this.getBoardOrientation !== this.turn
+    },
+    showSendLink () {
+      return this.isPlayerInitiator && !this.canGameStart
     }
   },
 
@@ -56,6 +64,22 @@ export default {
         this.isGameStarted = true
       }
       this.turn = data.turn
+    }
+  },
+
+  beforeRouteLeave (to, from, next) {
+  },
+
+  created () {
+    const roomId = this.$route.params.roomId
+    if (!this.isPlayerInitiator && roomId) {
+      this.$store.state.game.id = roomId
+      this.$socket.sendObj({
+        type: 'joinGame',
+        payload: JSON.stringify({
+          roomId
+        })
+      })
     }
   }
 }

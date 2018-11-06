@@ -20,7 +20,8 @@ import {
   VMenu,
   VTabs,
   VBtnToggle,
-  VResponsive
+  VResponsive,
+  VTextField
 } from 'vuetify'
 import 'vuetify/src/stylus/app.styl'
 
@@ -45,7 +46,8 @@ Vue.use(Vuetify, {
     VMenu,
     VTabs,
     VBtnToggle,
-    VResponsive
+    VResponsive,
+    VTextField
   },
   iconfont: 'md',
   theme: {

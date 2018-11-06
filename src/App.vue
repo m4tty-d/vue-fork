@@ -11,6 +11,7 @@ v-app
     //-   v-btn(flat='') Link Three
   v-content
     router-view
+  dialogs-wrapper
 </template>
 
 <script>
@@ -22,3 +23,8 @@ export default {
   }
 }
 </script>
+
+<style lang="sass">
+.cursor-pointer
+  cursor: pointer
+</style>
