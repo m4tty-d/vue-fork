@@ -22,7 +22,8 @@ export default new Vuex.Store({
         additional: 0
       },
       canStart: false,
-      fen: ''
+      fen: '',
+      turn: 'white'
     }
   },
   getters: {
@@ -72,6 +73,7 @@ export default new Vuex.Store({
         case 'move':
           console.log('MOVE!!!')
           state.game.fen = message.payload.fen
+          state.game.turn = state.game.turn === 'white' ? 'black' : 'white'
           break
         case 'error':
           console.log('Error!!! :', message.payload)
@@ -85,6 +87,9 @@ export default new Vuex.Store({
       state.socket.reconnectError = true
     },
 
+    CHANGE_TURN (state, turn) {
+      state.game.turn = turn
+    },
     RESET (state) {
       state.player.id = ''
       state.player.color = ''

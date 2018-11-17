@@ -32,9 +32,7 @@ export default {
 
   data () {
     return {
-      history: [],
-      turn: '',
-      isGameStarted: false
+      history: []
     }
   },
 
@@ -42,11 +40,14 @@ export default {
     ...mapState([
       'player', 'game'
     ]),
+    isGameStarted () {
+      return this.game.fen !== '' || this.history.length !== 0
+    },
     clockTicking () {
-      return this.isGameStarted && this.player.color === this.turn
+      return this.isGameStarted && this.player.color === this.game.turn
     },
     opponentsClockTicking () {
-      return this.isGameStarted && this.player.color !== this.turn
+      return this.isGameStarted && this.player.color !== this.game.turn
     },
     showSendLink () {
       return this.player.isInitiator && !this.game.canStart
@@ -56,10 +57,7 @@ export default {
   methods: {
     move (data) {
       this.history = data.history
-      if (this.history.length) {
-        this.isGameStarted = true
-      }
-      this.turn = data.turn
+      this.$store.commit('CHANGE_TURN', data.turn)
 
       this.$socket.sendObj({
         type: 'move',
