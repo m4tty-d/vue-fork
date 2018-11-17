@@ -5,11 +5,11 @@ v-container(fluid fill-height)
       chat
     v-flex(xs6)
       .board-container
-        chessboard(:orientation="getBoardOrientation" @onMove="move")
+        chessboard(:orientation="player.color" @onMove="move")
     v-flex.pl-3(xs3)
-      clock(:base="getBaseTime" :additional="getAdditionalTime" :ticking="opponentsClockTicking")
+      clock(:base="game.time.base" :additional="game.time.additional" :ticking="opponentsClockTicking")
       notation.my-4(:history="history")
-      clock.mb-4(:base="getBaseTime" :additional="getAdditionalTime" :ticking="clockTicking")
+      clock.mb-4(:base="game.time.base" :additional="game.time.additional" :ticking="clockTicking")
   send-link-modal(:show="showSendLink")
 </template>
 
@@ -19,7 +19,7 @@ import Notation from '@/components/Notation.vue'
 import Clock from '@/components/Clock.vue'
 import Chat from '@/components/Chat.vue'
 import SendLinkModal from '@/components/Modals/SendLink.vue'
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -39,21 +39,17 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'getBoardOrientation',
-      'getBaseTime',
-      'getAdditionalTime',
-      'isPlayerInitiator',
-      'canGameStart'
+    ...mapState([
+      'player', 'game'
     ]),
     clockTicking () {
-      return this.isGameStarted && this.getBoardOrientation === this.turn
+      return this.isGameStarted && this.player.color === this.turn
     },
     opponentsClockTicking () {
-      return this.isGameStarted && this.getBoardOrientation !== this.turn
+      return this.isGameStarted && this.player.color !== this.turn
     },
     showSendLink () {
-      return this.isPlayerInitiator && !this.canGameStart
+      return this.player.isInitiator && !this.game.canStart
     }
   },
 
@@ -72,7 +68,7 @@ export default {
 
   created () {
     const roomId = this.$route.params.roomId
-    if (!this.isPlayerInitiator && roomId) {
+    if (!this.player.isInitiator && roomId) {
       this.$store.state.game.id = roomId
       this.$socket.sendObj({
         type: 'joinGame',

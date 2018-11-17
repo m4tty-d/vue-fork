@@ -64,6 +64,11 @@ export default {
       handler () {
         this.tick()
       }
+    },
+    base: {
+      handler () {
+        this.seconds = moment.duration(this.base, 'minutes')
+      }
     }
   },
 
