@@ -21,25 +21,11 @@ export default new Vuex.Store({
         base: 0,
         additional: 0
       },
-      canStart: false
+      canStart: false,
+      fen: ''
     }
   },
   getters: {
-    getBoardOrientation (state) {
-      return state.player.color
-    },
-    getBaseTime (state) {
-      return state.game.time.base
-    },
-    getAdditionalTime (state) {
-      return state.game.time.additional
-    },
-    isPlayerInitiator (state) {
-      return state.player.isInitiator
-    },
-    canGameStart (state) {
-      return state.game.canStart
-    }
   },
   mutations: {
     SOCKET_ONOPEN (state) {
@@ -82,6 +68,10 @@ export default new Vuex.Store({
         case 'gameCanStart':
           console.log('GAME CAN START!!!')
           state.game.canStart = true
+          break
+        case 'move':
+          console.log('MOVE!!!')
+          state.game.fen = message.payload.fen
           break
         case 'error':
           console.log('Error!!! :', message.payload)

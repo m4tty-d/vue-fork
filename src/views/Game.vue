@@ -5,7 +5,7 @@ v-container(fluid fill-height)
       chat
     v-flex(xs6)
       .board-container
-        chessboard(:orientation="player.color" @onMove="move")
+        chessboard(:orientation="player.color" :fen="game.fen" @onMove="move")
     v-flex.pl-3(xs3)
       clock(:base="game.time.base" :additional="game.time.additional" :ticking="opponentsClockTicking")
       notation.my-4(:history="history")
@@ -60,6 +60,15 @@ export default {
         this.isGameStarted = true
       }
       this.turn = data.turn
+
+      this.$socket.sendObj({
+        type: 'move',
+        payload: JSON.stringify({
+          playerId: this.player.id,
+          roomId: this.game.id,
+          move: data.history[data.history.length - 1]
+        })
+      })
     }
   },
 

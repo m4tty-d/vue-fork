@@ -14,6 +14,9 @@ export default {
       type: String,
       default: 'white'
     },
+    fen: {
+      type: String
+    },
     onPromotion: {
       type: Function
     }
@@ -67,7 +70,7 @@ export default {
           fen: this.game.fen(),
           turnColor: this.turnColor(),
           movable: {
-            color: this.turnColor(),
+            color: this.orientation,
             dests: this.possibleMoves()
           }
         })
@@ -104,6 +107,19 @@ export default {
     orientation: {
       handler () {
         this.setBoard()
+      }
+    },
+    fen: {
+      handler () {
+        this.game.load(this.fen)
+        this.board.set({
+          fen: this.game.fen(),
+          turnColor: this.turnColor(),
+          movable: {
+            color: this.orientation,
+            dests: this.possibleMoves()
+          }
+        })
       }
     }
   },
