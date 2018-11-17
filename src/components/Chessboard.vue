@@ -90,7 +90,7 @@ export default {
         turnColor: this.turnColor(),
         orientation: this.orientation,
         movable: {
-          color: this.turnColor(),
+          color: this.orientation,
           dests: this.possibleMoves()
         }
       })

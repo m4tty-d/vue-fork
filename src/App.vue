@@ -3,7 +3,7 @@ v-app
   v-toolbar(v-if="notHome"
             class="babyPowder--text"
             color="secondary")
-    v-toolbar-title FORK
+    router-link(:to="{name: 'home'}" tag="v-toolbar-title" class="cursor-pointer") FORK
     //- v-spacer
     //- v-toolbar-items.hidden-sm-and-down
     //-   v-btn(flat='') Link One

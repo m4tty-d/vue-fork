@@ -64,6 +64,9 @@ export default {
   },
 
   beforeRouteLeave (to, from, next) {
+    if (confirm('Are you sure you\'d like to leave?')) {
+      next()
+    }
   },
 
   created () {
