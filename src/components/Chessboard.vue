@@ -82,22 +82,34 @@ export default {
         fen: this.game.fen(),
         turn: this.turnColor()
       })
+    },
+
+    setBoard () {
+      this.board = Chessground(this.$refs.board, {
+        fen: this.game.fen(),
+        turnColor: this.turnColor(),
+        orientation: this.orientation,
+        movable: {
+          color: this.turnColor(),
+          dests: this.possibleMoves()
+        }
+      })
+      this.board.set({
+        movable: { events: { after: this.changeTurn() } }
+      })
+    }
+  },
+
+  watch: {
+    orientation: {
+      handler () {
+        this.setBoard()
+      }
     }
   },
 
   mounted () {
-    this.board = Chessground(this.$refs.board, {
-      fen: this.game.fen(),
-      turnColor: this.turnColor(),
-      orientation: this.orientation,
-      movable: {
-        color: this.turnColor(),
-        dests: this.possibleMoves()
-      }
-    })
-    this.board.set({
-      movable: { events: { after: this.changeTurn() } }
-    })
+    this.setBoard()
   },
 
   created () {

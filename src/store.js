@@ -56,22 +56,28 @@ export default new Vuex.Store({
     SOCKET_ONMESSAGE (state, message) {
       switch (message.type) {
         case 'roomCreated':
+          console.log('ROOM CREATED!!!')
           state.game.id = message.payload.roomId
           state.game.time.base = message.payload.baseTime
           state.game.time.additional = message.payload.additionalTime
           state.player.isInitiator = true
-          router.push({ name: 'game', params: { roomId: state.game.id } })
           break
         case 'playerCreated':
+          console.log('PLAYER CREATED!!!')
           state.player.id = message.payload.playerId
           state.player.color = message.payload.color
-          // localStorage.setItem('playerId', state.player.id)
+          if (state.player.isInitiator) {
+            router.push({ name: 'game', params: { roomId: state.game.id } })
+          }
+          localStorage.setItem('playerId', state.player.id)
           // localStorage.setItem('playerColor', state.player.color)
           break
         case 'roomJoined':
           console.log('ROOM JOINED!!!')
-          state.game.time.base = message.payload.baseTime
-          state.game.time.additional = message.payload.additionalTime
+          Vue.set(state.game.time, 'base', message.payload.baseTime)
+          Vue.set(state.game.time, 'additional', message.payload.additionalTime)
+          // state.game.time.base = message.payload.baseTime
+          // state.game.time.additional = message.payload.additionalTime
           break
         case 'gameCanStart':
           console.log('GAME CAN START!!!')
