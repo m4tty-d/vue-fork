@@ -23,6 +23,8 @@ export default new Vuex.Store({
       },
       canStart: false,
       fen: '',
+      lastMove: '',
+      history: [],
       turn: 'white'
     }
   },
@@ -72,7 +74,10 @@ export default new Vuex.Store({
           break
         case 'move':
           console.log('MOVE!!!')
+          console.log(message.payload)
+          state.game.history.push(message.payload.move)
           state.game.fen = message.payload.fen
+          state.game.lastMove = message.payload.move
           state.game.turn = state.game.turn === 'white' ? 'black' : 'white'
           break
         case 'error':
@@ -89,6 +94,9 @@ export default new Vuex.Store({
 
     CHANGE_TURN (state, turn) {
       state.game.turn = turn
+    },
+    ADD_MOVE_TO_HISTORY (state, move) {
+      state.game.history.push(move)
     },
     RESET (state) {
       state.player.id = ''

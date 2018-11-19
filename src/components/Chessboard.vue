@@ -111,7 +111,7 @@ export default {
     },
     fen: {
       handler () {
-        this.game.load(this.fen)
+        this.game.move(this.$store.state.game.lastMove)
         this.board.set({
           fen: this.game.fen(),
           turnColor: this.turnColor(),

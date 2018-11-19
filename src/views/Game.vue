@@ -8,7 +8,7 @@ v-container(fluid fill-height)
         chessboard(:orientation="player.color" :fen="game.fen" @onMove="move")
     v-flex.pl-3(xs3)
       clock(:base="game.time.base" :additional="game.time.additional" :ticking="opponentsClockTicking")
-      notation.my-4(:history="history")
+      notation.my-4(:history="game.history")
       clock.mb-4(:base="game.time.base" :additional="game.time.additional" :ticking="clockTicking")
   send-link-modal(:show="showSendLink")
 </template>
@@ -30,18 +30,12 @@ export default {
     SendLinkModal
   },
 
-  data () {
-    return {
-      history: []
-    }
-  },
-
   computed: {
     ...mapState([
       'player', 'game'
     ]),
     isGameStarted () {
-      return this.game.fen !== '' || this.history.length !== 0
+      return this.game.fen !== '' || this.game.history.length !== 0
     },
     clockTicking () {
       return this.isGameStarted && this.player.color === this.game.turn
@@ -56,7 +50,8 @@ export default {
 
   methods: {
     move (data) {
-      this.history = data.history
+      const moveStr = data.history[data.history.length - 1]
+      this.$store.commit('ADD_MOVE_TO_HISTORY', moveStr)
       this.$store.commit('CHANGE_TURN', data.turn)
 
       this.$socket.sendObj({
@@ -64,7 +59,7 @@ export default {
         payload: JSON.stringify({
           playerId: this.player.id,
           roomId: this.game.id,
-          move: data.history[data.history.length - 1]
+          move: moveStr
         })
       })
     }
