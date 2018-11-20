@@ -85,9 +85,12 @@ export default new Vuex.Store({
           state.game.turn = state.game.turn === 'white' ? 'black' : 'white'
           break
         case 'clock':
-          console.log(message.payload)
+          console.log('myClock: ' + JSON.stringify(message.payload))
           break
         case 'enemyClock':
+          console.log('enemyClock: ' + JSON.stringify(message.payload))
+          break
+        case 'gameover':
           console.log(message.payload)
           break
         case 'error':
