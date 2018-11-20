@@ -28,21 +28,20 @@ export default new Vuex.Store({
       turn: 'white'
     }
   },
-  getters: {
-  },
+  getters: {},
   mutations: {
-    SOCKET_ONOPEN (state) {
+    SOCKET_ONOPEN(state) {
       state.socket.isConnected = true
       console.log('Socket connected')
     },
-    SOCKET_ONCLOSE (state) {
+    SOCKET_ONCLOSE(state) {
       state.socket.isConnected = false
       console.log('Socket closed')
     },
-    SOCKET_ONERROR () {
+    SOCKET_ONERROR() {
       console.log('Socket error')
     },
-    SOCKET_ONMESSAGE (state, message) {
+    SOCKET_ONMESSAGE(state, message) {
       switch (message.type) {
         case 'roomCreated':
           console.log('ROOM CREATED!!!')
@@ -56,7 +55,12 @@ export default new Vuex.Store({
           state.player.id = message.payload.playerId
           state.player.color = message.payload.color
           if (state.player.isInitiator) {
-            router.push({ name: 'game', params: { roomId: state.game.id } })
+            router.push({
+              name: 'game',
+              params: {
+                roomId: state.game.id
+              }
+            })
           }
           localStorage.setItem('playerId', state.player.id)
           // localStorage.setItem('playerColor', state.player.color)
@@ -80,25 +84,31 @@ export default new Vuex.Store({
           state.game.lastMove = message.payload.move
           state.game.turn = state.game.turn === 'white' ? 'black' : 'white'
           break
+        case 'clock':
+          console.log(message.payload)
+          break
+        case 'enemyClock':
+          console.log(message.payload)
+          break
         case 'error':
           console.log('Error!!! :', message.payload)
           break
       }
     },
-    SOCKET_RECONNECT () {
+    SOCKET_RECONNECT() {
       console.log('Socket reconnected')
     },
-    SOCKET_RECONNECT_ERROR (state) {
+    SOCKET_RECONNECT_ERROR(state) {
       state.socket.reconnectError = true
     },
 
-    CHANGE_TURN (state, turn) {
+    CHANGE_TURN(state, turn) {
       state.game.turn = turn
     },
-    ADD_MOVE_TO_HISTORY (state, move) {
+    ADD_MOVE_TO_HISTORY(state, move) {
       state.game.history.push(move)
     },
-    RESET (state) {
+    RESET(state) {
       state.player.id = ''
       state.player.color = ''
       state.game.id = ''
