@@ -30,18 +30,18 @@ export default new Vuex.Store({
   },
   getters: {},
   mutations: {
-    SOCKET_ONOPEN(state) {
+    SOCKET_ONOPEN (state) {
       state.socket.isConnected = true
       console.log('Socket connected')
     },
-    SOCKET_ONCLOSE(state) {
+    SOCKET_ONCLOSE (state) {
       state.socket.isConnected = false
       console.log('Socket closed')
     },
-    SOCKET_ONERROR() {
+    SOCKET_ONERROR () {
       console.log('Socket error')
     },
-    SOCKET_ONMESSAGE(state, message) {
+    SOCKET_ONMESSAGE (state, message) {
       switch (message.type) {
         case 'roomCreated':
           console.log('ROOM CREATED!!!')
@@ -98,20 +98,20 @@ export default new Vuex.Store({
           break
       }
     },
-    SOCKET_RECONNECT() {
+    SOCKET_RECONNECT () {
       console.log('Socket reconnected')
     },
-    SOCKET_RECONNECT_ERROR(state) {
+    SOCKET_RECONNECT_ERROR (state) {
       state.socket.reconnectError = true
     },
 
-    CHANGE_TURN(state, turn) {
+    CHANGE_TURN (state, turn) {
       state.game.turn = turn
     },
-    ADD_MOVE_TO_HISTORY(state, move) {
+    ADD_MOVE_TO_HISTORY (state, move) {
       state.game.history.push(move)
     },
-    RESET(state) {
+    RESET (state) {
       state.player.id = ''
       state.player.color = ''
       state.game.id = ''

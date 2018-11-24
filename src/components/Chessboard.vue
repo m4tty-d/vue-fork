@@ -7,6 +7,7 @@
 import Chess from 'chess.js'
 import { Chessground } from 'chessground'
 import '@/styles/chessboard.css'
+import debounce from 'lodash.debounce'
 
 export default {
   props: {
@@ -92,14 +93,21 @@ export default {
         fen: this.game.fen(),
         turnColor: this.turnColor(),
         orientation: this.orientation,
+        resizable: true,
         movable: {
           color: this.orientation,
           dests: this.possibleMoves()
         }
       })
+
       this.board.set({
         movable: { events: { after: this.changeTurn() } }
       })
+    },
+
+    onWindowResize (event) {
+      console.log('asdf')
+      document.body.dispatchEvent(new Event('chessground.resize'))
     }
   },
 
@@ -126,6 +134,12 @@ export default {
 
   mounted () {
     this.setBoard()
+
+    window.addEventListener('resize', debounce(this.onWindowResize, 250))
+  },
+
+  beforeDestroy () {
+    window.removeEventListener('resize', debounce(this.onWindowResize, 250))
   },
 
   created () {
