@@ -15,7 +15,7 @@ export default {
       type: String,
       default: 'white'
     },
-    fen: {
+    move: {
       type: String
     },
     onPromotion: {
@@ -61,7 +61,7 @@ export default {
       return filteredPromotions.length > 0
     },
 
-    changeTurn () {
+    handleMove () {
       return (orig, dest, metadata) => {
         if (this.isPromotion(orig, dest)) {
           this.promoteTo = this.onPromotion()
@@ -76,16 +76,13 @@ export default {
           }
         })
         this.calculatePromotions()
-        this.afterMove()
-      }
-    },
 
-    afterMove () {
-      this.$emit('onMove', {
-        history: this.game.history(),
-        fen: this.game.fen(),
-        turn: this.turnColor()
-      })
+        this.$emit('onMove', {
+          history: this.game.history(),
+          fen: this.game.fen(),
+          turn: this.turnColor()
+        })
+      }
     },
 
     setBoard () {
@@ -101,12 +98,11 @@ export default {
       })
 
       this.board.set({
-        movable: { events: { after: this.changeTurn() } }
+        movable: { events: { after: this.handleMove() } }
       })
     },
 
     onWindowResize (event) {
-      console.log('asdf')
       document.body.dispatchEvent(new Event('chessground.resize'))
     }
   },
@@ -117,9 +113,9 @@ export default {
         this.setBoard()
       }
     },
-    fen: {
+    move: {
       handler () {
-        this.game.move(this.$store.state.game.lastMove)
+        this.game.move(this.move)
         this.board.set({
           fen: this.game.fen(),
           turnColor: this.turnColor(),

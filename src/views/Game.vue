@@ -5,12 +5,13 @@ v-container(fluid fill-height)
       chat
     v-flex(xs6)
       .board-container
-        chessboard(:orientation="player.color" :fen="game.fen" @onMove="move")
+        chessboard(:orientation="player.color" :move="game.lastMove" @onMove="move")
     v-flex.pl-3(xs3)
       clock(:base="game.time.base" :additional="game.time.additional" :ticking="opponentsClockTicking")
       notation.my-4(:history="game.history")
       clock.mb-4(:base="game.time.base" :additional="game.time.additional" :ticking="clockTicking")
   send-link-modal(:show="showSendLink")
+  end-of-game-modal(:show="showEndOfGame")
 </template>
 
 <script>
@@ -19,6 +20,7 @@ import Notation from '@/components/Notation.vue'
 import Clock from '@/components/Clock.vue'
 import Chat from '@/components/Chat.vue'
 import SendLinkModal from '@/components/Modals/SendLink.vue'
+import EndOfGameModal from '@/components/Modals/EndOfGame.vue'
 import { mapState } from 'vuex'
 
 export default {
@@ -27,7 +29,8 @@ export default {
     Notation,
     Clock,
     Chat,
-    SendLinkModal
+    SendLinkModal,
+    EndOfGameModal
   },
 
   computed: {
@@ -45,6 +48,9 @@ export default {
     },
     showSendLink () {
       return this.player.isInitiator && !this.game.canStart
+    },
+    showEndOfGame () {
+      return !this.game.isRunning
     }
   },
 

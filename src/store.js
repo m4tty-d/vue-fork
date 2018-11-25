@@ -25,7 +25,9 @@ export default new Vuex.Store({
       fen: '',
       lastMove: '',
       history: [],
-      turn: 'white'
+      turn: 'white',
+      isRunning: false,
+      result: ''
     }
   },
   getters: {},
@@ -83,15 +85,19 @@ export default new Vuex.Store({
           state.game.fen = message.payload.fen
           state.game.lastMove = message.payload.move
           state.game.turn = state.game.turn === 'white' ? 'black' : 'white'
+          state.game.isRunning = state.game.isRunning || true
           break
-        case 'clock':
-          console.log('myClock: ' + JSON.stringify(message.payload))
-          break
-        case 'enemyClock':
-          console.log('enemyClock: ' + JSON.stringify(message.payload))
-          break
+        // case 'clock':
+        //   console.log('myClock: ' + JSON.stringify(message.payload))
+        //   break
+        // case 'enemyClock':
+        //   console.log('enemyClock: ' + JSON.stringify(message.payload))
+        //   break
         case 'gameover':
+          console.log('GAMEOVER!!!')
           console.log(message.payload)
+          state.game.result = message.payload.result
+          state.game.isRunning = false
           break
         case 'error':
           console.log('Error!!! :', message.payload)
