@@ -28,6 +28,10 @@ export default new Vuex.Store({
       turn: 'white',
       isRunning: false,
       result: ''
+    },
+    stoppers: {
+      white: 0,
+      black: 0
     }
   },
   getters: {},
@@ -86,13 +90,12 @@ export default new Vuex.Store({
           state.game.lastMove = message.payload.move
           state.game.turn = state.game.turn === 'white' ? 'black' : 'white'
           state.game.isRunning = state.game.isRunning || true
+
+          // if (state.player.color === state.game.turn) {
+          //   state.stoppers.ourPlayer =
+          // }
+
           break
-        // case 'clock':
-        //   console.log('myClock: ' + JSON.stringify(message.payload))
-        //   break
-        // case 'enemyClock':
-        //   console.log('enemyClock: ' + JSON.stringify(message.payload))
-        //   break
         case 'gameover':
           console.log('GAMEOVER!!!')
           console.log(message.payload)
@@ -117,12 +120,22 @@ export default new Vuex.Store({
     ADD_MOVE_TO_HISTORY (state, move) {
       state.game.history.push(move)
     },
+    // CHANGE_TIME (state, color, ) {
+
+    // },
     RESET (state) {
       state.player.id = ''
       state.player.color = ''
       state.game.id = ''
       state.time.base = 0
       state.time.additional = 0
+    }
+  },
+  actions: {
+    START_STOPPER ({ commit }) {
+      setInterval(() => {
+        commit()
+      }, 1000)
     }
   }
 })

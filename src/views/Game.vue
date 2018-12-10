@@ -7,9 +7,9 @@ v-container(fluid fill-height)
       .board-container
         chessboard(:orientation="player.color" :move="game.lastMove" @onMove="move")
     v-flex.pl-3(xs3)
-      clock(:base="game.time.base" :additional="game.time.additional" :ticking="opponentsClockTicking")
+      clock(:seconds="opponentTimeInSeconds")
       notation.my-4(:history="game.history")
-      clock.mb-4(:base="game.time.base" :additional="game.time.additional" :ticking="clockTicking")
+      clock.mb-4(:seconds="ourTimeInSeconds")
   send-link-modal(:show="showSendLink")
   //- end-of-game-modal(:show="showEndOfGame")
 </template>
@@ -35,7 +35,7 @@ export default {
 
   computed: {
     ...mapState([
-      'player', 'game'
+      'player', 'game', 'stoppers'
     ]),
     isGameStarted () {
       return this.game.fen !== '' || this.game.history.length !== 0
@@ -50,7 +50,13 @@ export default {
       return this.player.isInitiator && !this.game.canStart
     },
     showEndOfGame () {
-      return !this.game.isRunning
+      return this.game.result !== ''
+    },
+    opponentTimeInSeconds () {
+      return this.stoppers[this.player.color === 'white' ? 'black' : 'white']
+    },
+    ourTimeInSeconds () {
+      return this.stoppers[this.player.color]
     }
   },
 
