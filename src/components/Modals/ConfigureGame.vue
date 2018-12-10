@@ -95,7 +95,18 @@ export default {
       }
     },
 
+    getRandomIntInclusive (min, max) {
+      min = Math.ceil(min)
+      max = Math.floor(max)
+      return Math.floor(Math.random() * (max - min + 1)) + min
+    },
+
     create () {
+      if (this.color === 'random') {
+        const randomIndex = this.getRandomIntInclusive(0, 1)
+        this.color = ['black', 'white'][randomIndex]
+      }
+
       this.$socket.sendObj({
         type: 'createGame',
         payload: JSON.stringify({

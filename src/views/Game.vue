@@ -11,7 +11,7 @@ v-container(fluid fill-height)
       notation.my-4(:history="game.history")
       clock.mb-4(:base="game.time.base" :additional="game.time.additional" :ticking="clockTicking")
   send-link-modal(:show="showSendLink")
-  end-of-game-modal(:show="showEndOfGame")
+  //- end-of-game-modal(:show="showEndOfGame")
 </template>
 
 <script>
