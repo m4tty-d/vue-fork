@@ -41,10 +41,10 @@ export default {
       return this.game.fen !== '' || this.game.history.length !== 0
     },
     clockTicking () {
-      return this.isGameStarted && this.player.color === this.game.turn
+      return this.isGameStarted && this.player.color === this.game.turn && this.game.isRunning
     },
     opponentsClockTicking () {
-      return this.isGameStarted && this.player.color !== this.game.turn
+      return this.isGameStarted && this.player.color !== this.game.turn && this.game.isRunning
     },
     showSendLink () {
       return this.player.isInitiator && !this.game.canStart
