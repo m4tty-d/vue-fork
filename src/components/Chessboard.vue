@@ -61,12 +61,29 @@ export default {
       return filteredPromotions.length > 0
     },
 
+    isMoveCorrect (orig, dest) {
+      const possibleMoves = this.possibleMoves()
+      return possibleMoves[orig] && possibleMoves[orig].includes(dest)
+    },
+
     handleMove () {
       return (orig, dest, metadata) => {
-        if (this.isPromotion(orig, dest)) {
-          this.promoteTo = this.onPromotion()
+        if (this.isMoveCorrect(orig, dest)) {
+          this.game.move({ from: orig, to: dest, promotion: this.promoteTo })
+
+          if (this.isPromotion(orig, dest)) {
+            this.promoteTo = this.onPromotion()
+          }
+
+          this.calculatePromotions()
+
+          this.$emit('onMove', {
+            history: this.game.history(),
+            fen: this.game.fen(),
+            turn: this.turnColor()
+          })
         }
-        this.game.move({ from: orig, to: dest, promotion: this.promoteTo })
+
         this.board.set({
           fen: this.game.fen(),
           turnColor: this.turnColor(),
@@ -74,13 +91,6 @@ export default {
             color: this.orientation,
             dests: this.possibleMoves()
           }
-        })
-        this.calculatePromotions()
-
-        this.$emit('onMove', {
-          history: this.game.history(),
-          fen: this.game.fen(),
-          turn: this.turnColor()
         })
       }
     },
