@@ -50,7 +50,7 @@ export default {
       return this.player.isInitiator && !this.game.canStart
     },
     showEndOfGame () {
-      return !this.game.isRunning
+      return this.game.result !== ''
     }
   },
 
