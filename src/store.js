@@ -4,7 +4,7 @@ import router from './router';
 
 Vue.use(Vuex);
 
-const _clone = v => JSON.parse(JSON.stringify(v));
+const _clone = v => JSON.parse(JSON.stringify(v))
 
 const baseState = {
   socket: {
@@ -30,7 +30,7 @@ const baseState = {
     isRunning: false,
     result: ''
   }
-};
+}
 
 export default new Vuex.Store({
   state: _clone(baseState),
@@ -125,9 +125,9 @@ export default new Vuex.Store({
     ADD_MOVE_TO_HISTORY(state, move) {
       state.game.history.push(move);
     },
-    RESET(state) {
+    RESET (state) {
       for (let key in baseState) {
-        state[key] = baseState[key];
+        state[key] = baseState[key]
       }
     }
   }
