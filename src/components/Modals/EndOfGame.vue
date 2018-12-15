@@ -5,9 +5,9 @@ v-dialog(v-model="show" persistent width="400")
     v-divider
     v-container.pa-2
       v-layout.py-2(justify-space-around)
-        v-btn(color="secondary") Rematch
+        v-btn(color="secondary" @click="rematch") I want a rematch
         v-btn(color="primary")
-          | Save game
+          | Save game as pgn
           v-icon(right) cloud_download
       router-link(:to="{name: 'home'}" tag="a" class="cursor-pointer") Back home
 </template>
@@ -38,9 +38,16 @@ export default {
     }
   },
 
-  data () {
-    return {
-      link: window.location
+  methods: {
+    rematch () {
+      this.$socket.sendObj({
+        type: 'rematch',
+        payload: JSON.stringify({
+          color: this.color,
+          baseTime: this.time.base,
+          additionalTime: this.time.additional
+        })
+      })
     }
   }
 }

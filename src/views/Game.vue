@@ -1,12 +1,12 @@
 <template lang="pug">
 v-container(fluid fill-height)
   v-layout(row wrap align-center)
-    v-flex.pr-3(xs3)
-      chat
-    v-flex(xs6)
+    //- v-flex.pr-3(xs3)
+    //-   chat
+    v-flex(xs8)
       .board-container
         chessboard(:orientation="player.color" :move="game.lastMove" @onMove="move")
-    v-flex.pl-3(xs3)
+    v-flex.pl-3(xs4)
       clock(:base="game.time.base" :additional="game.time.additional" :ticking="opponentsClockTicking")
       notation.my-4(:history="game.history")
       clock.mb-4(:base="game.time.base" :additional="game.time.additional" :ticking="clockTicking")
@@ -68,6 +68,10 @@ export default {
           move: moveStr
         })
       })
+
+      if (this.game.drawOffered) {
+        this.$store.state.game.drawOffered = false
+      }
     }
   },
 

@@ -28,6 +28,7 @@ const baseState = {
     history: [],
     turn: 'white',
     isRunning: false,
+    drawOffered: false,
     result: ''
   }
 }
@@ -95,12 +96,9 @@ export default new Vuex.Store({
           state.game.turn = state.game.turn === 'white' ? 'black' : 'white'
           state.game.isRunning = state.game.isRunning || true
           break
-        // case 'clock':
-        // console.log('myClock: ' + JSON.stringify(message.payload))
-        // break
-        // case 'enemyClock':
-        // console.log('enemyClock: ' + JSON.stringify(message.payload))
-        // break
+        case 'drawOffered':
+          state.game.drawOffered = true
+          break
         case 'gameover':
           console.log('GAMEOVER!!!')
           console.log(message.payload)
@@ -125,9 +123,12 @@ export default new Vuex.Store({
     ADD_MOVE_TO_HISTORY (state, move) {
       state.game.history.push(move)
     },
+
     RESET (state) {
-      for (let key in baseState) {
-        state[key] = baseState[key]
+      const base = _clone(baseState)
+
+      for (let key in base) {
+        state[key] = base[key]
       }
     }
   }
