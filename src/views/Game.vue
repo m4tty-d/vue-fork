@@ -3,13 +3,24 @@ v-container(fluid fill-height)
   v-layout(row wrap align-center)
     //- v-flex.pr-3(xs3)
     //-   chat
-    v-flex(xs8)
-      .board-container
-        chessboard(:orientation="player.color" :move="game.lastMove" @onMove="move")
-    v-flex.pl-3(xs4)
-      clock(:base="game.time.base" :additional="game.time.additional" :ticking="opponentsClockTicking")
-      notation.my-4(:history="game.history")
-      clock.mb-4(:base="game.time.base" :additional="game.time.additional" :ticking="clockTicking")
+    template(v-if="$vuetify.breakpoint.smAndDown")
+      v-flex.pb-5(fluid xs12)
+        clock(owner="opponent" :ticking="opponentsClockTicking")
+      v-flex(lg7 md8 xs12)
+        .board-container
+          chessboard(:orientation="player.color" :move="game.lastMove" @onMove="move")
+      v-flex.pt-5(fluid xs12)
+        clock(owner="player" :ticking="clockTicking")
+      v-flex(fluid xs12)
+        notation.my-4(:history="game.history")
+    template(v-else)
+      v-flex(lg7 md8)
+        .board-container
+          chessboard(:orientation="player.color" :move="game.lastMove" @onMove="move")
+      v-flex.pl-3(lg4 md4)
+        clock(owner="opponent" :ticking="opponentsClockTicking")
+        notation.my-4(:history="game.history")
+        clock.mb-4(owner="player" :ticking="clockTicking")
   send-link-modal(:show="showSendLink")
   end-of-game-modal(:show="showEndOfGame")
 </template>
@@ -69,6 +80,8 @@ export default {
         })
       })
 
+      this.$store.state.game.isRunning = true
+
       if (this.game.drawOffered) {
         this.$store.state.game.drawOffered = false
       }
@@ -77,21 +90,8 @@ export default {
 
   beforeRouteLeave (to, from, next) {
     if (confirm('Are you sure you\'d like to leave?')) {
-      this.$store.commit('RESET')
+      this.$store.commit('RESET_STATE')
       next()
-    }
-  },
-
-  created () {
-    const roomId = this.$route.params.roomId
-    if (!this.player.isInitiator && roomId) {
-      this.$store.state.game.id = roomId
-      this.$socket.sendObj({
-        type: 'joinGame',
-        payload: JSON.stringify({
-          roomId
-        })
-      })
     }
   }
 }

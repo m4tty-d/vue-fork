@@ -4,11 +4,13 @@ v-dialog(v-model="show" persistent width="400")
     v-card-title.headline.primary.babyPowder--text Game ended - {{ resultStr }}
     v-divider
     v-container.pa-2
-      v-layout.py-2(justify-space-around)
-        v-btn(color="secondary" @click="rematch") I want a rematch
-        v-btn(color="primary")
-          | Save game as pgn
-          v-icon(right) cloud_download
+      v-layout.py-2(row wrap)
+        v-flex(md6 xs12)
+          v-btn(block color="secondary" @click="rematch") I want a rematch
+        v-flex(md6 xs12)
+          v-btn(block color="primary")
+            | Save game as pgn
+            v-icon(right) cloud_download
       router-link(:to="{name: 'home'}" tag="a" class="cursor-pointer") Back home
 </template>
 
@@ -24,7 +26,7 @@ export default {
 
   computed: {
     ...mapState([
-      'game'
+      'game', 'player'
     ]),
 
     resultStr () {
@@ -43,9 +45,8 @@ export default {
       this.$socket.sendObj({
         type: 'rematch',
         payload: JSON.stringify({
-          color: this.color,
-          baseTime: this.time.base,
-          additionalTime: this.time.additional
+          roomId: this.game.id,
+          playerId: this.player.id
         })
       })
     }

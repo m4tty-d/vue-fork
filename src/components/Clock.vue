@@ -2,20 +2,18 @@
 v-card
   v-card-title
     .display-2.font-weight-light {{ getMinutesAndSeconds }}
-    .headline {{ getMilliseconds }}
+    //- .headline {{ getMilliseconds }}
 </template>
 
 <script>
 import moment from 'moment'
+import { mapState } from 'vuex'
 
 export default {
   props: {
-    base: {
-      type: Number,
+    owner: {
+      type: String,
       required: true
-    },
-    additional: {
-      type: Number
     },
     ticking: {
       type: Boolean,
@@ -24,36 +22,41 @@ export default {
   },
 
   computed: {
+    ...mapState([
+      'game'
+    ]),
+    milliseconds () {
+      return this.$store.state.stopper[this.owner]
+    },
     getMinutesAndSeconds () {
-      return moment.utc(this.seconds.asMilliseconds()).format('mm:ss')
+      return moment.utc(this.milliseconds).format('mm:ss')
     },
     getMilliseconds () {
-      return moment.utc(this.seconds.asMilliseconds()).format(':SS')
+      return moment.utc(this.milliseconds).format(':SS')
     }
   },
 
   data () {
     return {
-      seconds: null,
       timer: null,
-      interval: null
+      intervalId: null
     }
   },
 
   methods: {
     tick () {
       if (this.ticking) {
-        this.interval = setInterval(() => {
-          if (this.seconds.as('seconds') > 0) {
-            this.seconds.subtract(moment.duration(10, 'ms'))
+        this.intervalId = setInterval(() => {
+          if (this.milliseconds > 0) {
+            this.$store.commit('TICK_STOPPER', this.owner)
           } else {
-            clearInterval(this.interval)
+            clearInterval(this.intervalId)
           }
-        }, 10)
+        }, 1000)
       } else {
-        clearInterval(this.interval)
-        if (this.additional) {
-          this.seconds.add(moment.duration(this.additional, 's'))
+        clearInterval(this.intervalId)
+        if (this.$store.state.game.time.additional) {
+          this.$store.commit('ADD_TIME_TO_STOPPER', this.owner)
         }
       }
     }
@@ -64,17 +67,17 @@ export default {
       handler () {
         this.tick()
       }
-    },
-    base: {
-      handler () {
-        this.seconds = moment.duration(this.base, 'minutes')
-      }
     }
   },
 
   created () {
-    this.seconds = moment.duration(this.base, 'minutes')
     if (this.ticking) this.tick()
+  },
+
+  beforeDestroy () {
+    if (this.intervalId) {
+      clearInterval(this.intervalId)
+    }
   }
 }
 </script>

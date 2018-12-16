@@ -8,6 +8,8 @@ import './plugins/plugins'
 
 Vue.config.productionTip = false
 
+store.$socket = Vue.prototype.$socket
+
 new Vue({
   router,
   store,

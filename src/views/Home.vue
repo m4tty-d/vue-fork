@@ -7,7 +7,7 @@ v-container(class="home-jumbo" fill-height fluid)
         .subheading.home-jumbo-subtitle.mt-2 {{ $t('motto') }}
         .display-1.font-weight-bold.home-question.mt-4.mb-5 {{ $t('areYouReady') }}
         configure-game-modal.home-jumbo-action
-        v-btn(:to="{name: 'watch'}" flat large) {{ $t('watchOthers') }}
+        //- v-btn(:to="{name: 'watch'}" flat large) {{ $t('watchOthers') }}
 </template>
 
 <script>

@@ -8,6 +8,7 @@ import Chess from 'chess.js'
 import { Chessground } from 'chessground'
 import '@/styles/chessboard.css'
 import debounce from 'lodash.debounce'
+import { mapState } from 'vuex'
 
 export default {
   props: {
@@ -25,29 +26,34 @@ export default {
 
   data () {
     return {
-      game: null,
       board: null,
       promotions: [],
       promoteTo: 'q'
     }
   },
 
+  computed: {
+    ...mapState([
+      'game'
+    ])
+  },
+
   methods: {
     turnColor () {
-      return this.game.turn() === 'w' ? 'white' : 'black'
+      return this.game.repr.turn() === 'w' ? 'white' : 'black'
     },
 
     possibleMoves () {
       const dests = {}
-      this.game.SQUARES.forEach(s => {
-        const ms = this.game.moves({ square: s, verbose: true })
+      this.game.repr.SQUARES.forEach(s => {
+        const ms = this.game.repr.moves({ square: s, verbose: true })
         if (ms.length) dests[s] = ms.map(m => m.to)
       })
       return dests
     },
 
     calculatePromotions () {
-      let moves = this.game.moves({ verbose: true })
+      let moves = this.game.repr.moves({ verbose: true })
       this.promotions = []
       for (let move of moves) {
         if (move.promotion) {
@@ -69,7 +75,7 @@ export default {
     handleMove () {
       return (orig, dest, metadata) => {
         if (this.isMoveCorrect(orig, dest)) {
-          this.game.move({ from: orig, to: dest, promotion: this.promoteTo })
+          this.game.repr.move({ from: orig, to: dest, promotion: this.promoteTo })
 
           if (this.isPromotion(orig, dest)) {
             this.promoteTo = this.onPromotion()
@@ -78,14 +84,14 @@ export default {
           this.calculatePromotions()
 
           this.$emit('onMove', {
-            history: this.game.history(),
-            fen: this.game.fen(),
+            history: this.game.repr.history(),
+            fen: this.game.repr.fen(),
             turn: this.turnColor()
           })
         }
 
         this.board.set({
-          fen: this.game.fen(),
+          fen: this.game.repr.fen(),
           turnColor: this.turnColor(),
           movable: {
             color: this.orientation,
@@ -97,7 +103,7 @@ export default {
 
     setBoard () {
       this.board = Chessground(this.$refs.board, {
-        fen: this.game.fen(),
+        fen: this.game.repr.fen(),
         turnColor: this.turnColor(),
         orientation: this.orientation,
         resizable: true,
@@ -125,9 +131,9 @@ export default {
     },
     move: {
       handler () {
-        this.game.move(this.move)
+        this.game.repr.move(this.move)
         this.board.set({
-          fen: this.game.fen(),
+          fen: this.game.repr.fen(),
           turnColor: this.turnColor(),
           movable: {
             color: this.orientation,
@@ -149,7 +155,7 @@ export default {
   },
 
   created () {
-    this.game = new Chess()
+    this.game.repr = new Chess()
     this.board = null
   }
 }
