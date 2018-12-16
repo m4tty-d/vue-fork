@@ -37,6 +37,10 @@ const baseState = {
   stopper: {
     player: 0,
     opponent: 0
+  },
+  scores: {
+    player: 0,
+    opponent: 0
   }
 }
 
@@ -161,6 +165,10 @@ export default new Vuex.Store({
           state.game.canStart = true
           state.game.result = ''
           state.game.repr = new Chess()
+
+          state.scores.player = message.payload.playerScore
+          state.scores.opponent = message.payload.opponentScore
+
           commit('SET_STOPPER', state.game.time.base)
 
           state.player.color = state.player.color === 'white' ? 'black' : 'white'

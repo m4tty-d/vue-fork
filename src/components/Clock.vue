@@ -2,6 +2,7 @@
 v-card
   v-card-title(:class="{'active-background': ticking, 'babyPowder--text': ticking}")
     .display-2.font-weight-light {{ getMinutesAndSeconds }}
+    .ml-auto.headline.font-weight-light {{ score }}
     //- .headline {{ getMilliseconds }}
 </template>
 
@@ -23,8 +24,11 @@ export default {
 
   computed: {
     ...mapState([
-      'game'
+      'game', 'scores'
     ]),
+    score () {
+      return this.scores[this.owner]
+    },
     milliseconds () {
       return this.$store.state.stopper[this.owner]
     },
