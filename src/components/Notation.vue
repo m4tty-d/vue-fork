@@ -37,8 +37,6 @@ export default {
     }
   },
 
-  
-
   computed: {
     ...mapState([
       'player', 'game'
