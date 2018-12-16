@@ -8,7 +8,7 @@ v-dialog(v-model="show" persistent width="400")
         v-flex(md6 xs12)
           v-btn(block color="secondary" @click="rematch") I want a rematch
         v-flex(md6 xs12)
-          v-btn(block color="primary")
+          v-btn(block color="primary" @click="saveGame")
             | Save game as pgn
             v-icon(right) cloud_download
       router-link(:to="{name: 'home'}" tag="a" class="cursor-pointer") Back home
@@ -16,6 +16,8 @@ v-dialog(v-model="show" persistent width="400")
 
 <script>
 import { mapState } from 'vuex'
+import * as FileSaver from 'file-saver'
+import moment from 'moment'
 
 export default {
   props: {
@@ -49,6 +51,14 @@ export default {
           playerId: this.player.id
         })
       })
+    },
+    saveGame () {
+this.$const blob = new Blob([this.game.repr.pgn()], { type: 'text/plain;charset=utf-8' })
+      FileSaver.saveAs(blob, `game_${moment().format('YYYY_MM_DD_HH_mm')}.pgn`)
+    },
+    saveGame () {
+      const blob = new Blob([this.game.repr.pgn()], { type: 'text/plain;charset=utf-8' })
+      FileSaver.saveAs(blob, `game_${moment().format('YYYY_MM_DD_HH_mm')}.pgn`)
     }
   }
 }
