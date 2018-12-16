@@ -17,7 +17,7 @@ v-card
       v-btn(flat block @click="resign")
         v-icon.mr-2 outlined_flag
         | Resign
-  v-card-text.notation-holder
+  v-card-text.notation-holder(ref="notationHolder")
     div
       template(v-for="(move, index) in historySliced")
         span {{ `${index + 1}. ` }}
@@ -36,6 +36,8 @@ export default {
       type: Array
     }
   },
+
+  
 
   computed: {
     ...mapState([
@@ -83,6 +85,15 @@ export default {
 
     denyDraw () {
       this.$store.state.game.drawOffered = false
+    }
+  },
+
+  watch: {
+    history: {
+      handler () {
+        const element = this.$refs.notationHolder
+        element.scrollTop = element.scrollHeight - element.clientHeight
+      }
     }
   }
 }
