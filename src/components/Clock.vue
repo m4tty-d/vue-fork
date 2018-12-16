@@ -1,6 +1,6 @@
 <template lang="pug">
 v-card
-  v-card-title
+  v-card-title(:class="{'active-background': ticking, 'babyPowder--text': ticking}")
     .display-2.font-weight-light {{ getMinutesAndSeconds }}
     //- .headline {{ getMilliseconds }}
 </template>
@@ -81,3 +81,8 @@ export default {
   }
 }
 </script>
+
+<style lang="sass">
+  .active-background
+    background-color: rgba(1, 22, 39, 0.78)
+</style>
