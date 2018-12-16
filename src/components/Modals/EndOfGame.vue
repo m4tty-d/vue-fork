@@ -53,10 +53,6 @@ export default {
       })
     },
     saveGame () {
-this.$const blob = new Blob([this.game.repr.pgn()], { type: 'text/plain;charset=utf-8' })
-      FileSaver.saveAs(blob, `game_${moment().format('YYYY_MM_DD_HH_mm')}.pgn`)
-    },
-    saveGame () {
       const blob = new Blob([this.game.repr.pgn()], { type: 'text/plain;charset=utf-8' })
       FileSaver.saveAs(blob, `game_${moment().format('YYYY_MM_DD_HH_mm')}.pgn`)
     }
