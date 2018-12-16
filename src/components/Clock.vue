@@ -55,9 +55,9 @@ export default {
         }, 1000)
       } else {
         clearInterval(this.intervalId)
-        if (this.$store.state.game.time.additional) {
-          this.$store.commit('ADD_TIME_TO_STOPPER', this.owner)
-        }
+        // if (this.$store.state.game.time.additional) {
+        //   this.$store.commit('ADD_TIME_TO_STOPPER', this.owner)
+        // }
       }
     }
   },

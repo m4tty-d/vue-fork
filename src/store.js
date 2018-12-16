@@ -146,7 +146,8 @@ export default new Vuex.Store({
           state.game.turn = state.game.turn === 'white' ? 'black' : 'white'
           state.game.isRunning = true
 
-          state.stopper.opponent = message.payload.seconds * 1000
+          state.stopper.player = message.payload.playerSeconds * 1000
+          state.stopper.opponent = message.payload.opponentSeconds * 1000
           break
         case 'drawOffered':
           state.game.drawOffered = true
