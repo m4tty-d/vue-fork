@@ -68,6 +68,8 @@ export default new Vuex.Store({
 
     RESET_STATE (state) {
       state = _clone(baseState)
+
+      localStorage.removeItem('playerId')
     }
   },
   actions: {
@@ -76,10 +78,19 @@ export default new Vuex.Store({
       console.log('Socket connected')
 
       setTimeout(() => {
-        if (!state.player.id && router.currentRoute.name === 'game') {
+        if (router.currentRoute.name === 'game') {
+          const playerId = localStorage.getItem('playerId')
           const roomId = router.currentRoute.params.roomId
 
-          if (!state.player.isInitiator && roomId) {
+          if (playerId && !state.player.id) {
+            this.$socket.sendObj({
+              type: 'loadStateBack',
+              payload: JSON.stringify({
+                roomId,
+                playerId
+              })
+            })
+          } else if (!state.player.id && !state.player.isInitiator && roomId) {
             state.game.id = roomId
             this.$socket.sendObj({
               type: 'joinGame',
@@ -177,6 +188,20 @@ export default new Vuex.Store({
           break
         case 'error':
           console.log('Error!!! :', message.payload)
+          break
+        case 'stateLoaded':
+          const { color, baseTime, additionalTime, fen, playerSeconds, opponentSeconds, turn } = message.payload
+
+          state.player.color = color
+          state.game.time.base = baseTime
+          state.game.time.additional = additionalTime
+          state.game.fen = fen
+          state.stopper.player = playerSeconds
+          state.stopper.opponent = opponentSeconds
+          state.game.turn = turn
+          state.game.canStart = true
+          state.game.isRunning = true
+
           break
       }
     },
