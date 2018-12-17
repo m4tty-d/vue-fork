@@ -67,11 +67,7 @@ export default new Vuex.Store({
     },
 
     RESET_STATE (state) {
-      const base = _clone(baseState)
-
-      for (let key in base) {
-        state[key] = base[key]
-      }
+      state = _clone(baseState)
     }
   },
   actions: {
